@@ -2,11 +2,11 @@
   "name": "solarsync-backend",
   "version": "1.0.0",
   "description": "SolarSync IoT backend server",
-  "main": "dist/server.js",
+  "main": "app.ts",
   "scripts": {
     "dev": "ts-node-dev --respawn --transpile-only src/server.ts",
     "build": "tsc",
-    "start": "node dist/server.js"
+    "start": "node app.ts"
   },
   "dependencies": {
     "cors": "^2.8.5",

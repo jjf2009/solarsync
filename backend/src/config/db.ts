@@ -14,4 +14,25 @@ const pool = mysql.createPool({
   queueLimit: 0,
 });
 
+export async function initDb(): Promise<void> {
+  const createTableSql = `
+    CREATE TABLE IF NOT EXISTS sensor_readings (
+      id          INT AUTO_INCREMENT PRIMARY KEY,
+      ldr1        INT           NOT NULL,
+      ldr2        INT           NOT NULL,
+      angle       INT           NOT NULL,
+      direction   VARCHAR(10)   NOT NULL,
+      created_at  DATETIME      NOT NULL DEFAULT CURRENT_TIMESTAMP,
+      INDEX idx_created_at (created_at DESC)
+    )
+  `;
+  try {
+    await pool.execute(createTableSql);
+    console.log('[DB] Database connection verified and table initialized.');
+  } catch (err: any) {
+    console.error('[DB] Database initialization failed. Please ensure the database exists and password is correct.', err.message);
+  }
+}
+
 export default pool;
+
