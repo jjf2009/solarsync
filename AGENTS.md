@@ -79,14 +79,12 @@ Do not install new libraries without approval.
 ---
 ## Architecture
 Use this folder structure:
-```
-
-```text id="q3gf7r"
 ```text id="xif09w"
 solar-sync/
 │
 ├── app/
 │   ├── index.tsx
+│   ├── historical_data.tsx
 │   ├── _layout.tsx
 │   └── +not-found.tsx
 │

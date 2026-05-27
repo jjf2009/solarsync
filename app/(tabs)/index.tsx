@@ -15,6 +15,8 @@ import { HeaderBar } from '@/components/HeaderBar';
 import { SensorCard } from '@/components/SensorCard';
 import { ServoIndicator } from '@/components/ServoIndicator';
 import { StatusCard } from '@/components/StatusCard';
+import { LoadingState } from '@/components/LoadingState';
+import { ErrorState } from '@/components/ErrorState';
 
 import { useSensorData } from '@/hooks/useSensorData';
 import { useSensorStore } from '@/store/sensorStore';
@@ -49,22 +51,7 @@ export default function HomeScreen() {
   // ─── First-load spinner ───────────────────────────────────────────────────
 
   if (isFirstLoad) {
-    return (
-      <SafeAreaView className="flex-1 bg-[#131314] items-center justify-center p-6">
-        <StatusBar barStyle="light-content" />
-        <View className="items-center">
-          <View className="w-16 h-16 rounded-full border-4 border-[#00dbe7]/20 border-t-[#00dbe7] animate-spin items-center justify-center mb-6">
-            <ActivityIndicator size="large" color="#00dbe7" />
-          </View>
-          <Text className="text-[#e5e2e3] font-bold text-lg tracking-wider mb-2 font-sans text-center">
-            INITIALIZING SYSTEM TELEMETRY
-          </Text>
-          <Text className="text-[#849495] text-xs font-mono text-center max-w-[280px]">
-            Attempting secure connection to Node.js backend port 5000...
-          </Text>
-        </View>
-      </SafeAreaView>
-    );
+    return <LoadingState />;
   }
 
   // ─── Main dashboard ───────────────────────────────────────────────────────
@@ -83,29 +70,9 @@ export default function HomeScreen() {
       >
         {/* Banner for API Connection Error or Simulated Mode */}
         {error && (
-          <View className="mb-6 p-4 rounded-[20px] bg-[#ffdad6]/5 border border-[#ffb4ab]/20 flex-row justify-between items-center">
-            <View className="flex-row items-center flex-1 mr-3">
-              <Ionicons name="warning-outline" size={18} color="#ffb4ab" />
-              <View className="ml-3 flex-1">
-                <Text className="text-[11px] font-bold text-[#ffb4ab] uppercase font-mono tracking-wider">
-                  Live Server Offline
-                </Text>
-                <Text className="text-[10px] text-[#ffb4ab]/80 font-mono mt-0.5 leading-4">
-                  {error}
-                </Text>
-              </View>
-            </View>
-            <TouchableOpacity
-              onPress={handleRetry}
-              className="bg-[#ffb4ab]/10 hover:bg-[#ffb4ab]/20 px-3 py-1.5 rounded-full border border-[#ffb4ab]/30 flex-row items-center"
-            >
-              <Ionicons name="refresh" size={12} color="#ffb4ab" />
-              <Text className="text-[9px] font-bold text-[#ffb4ab] font-mono ml-1 uppercase">
-                RETRY
-              </Text>
-            </TouchableOpacity>
-          </View>
+          <ErrorState error={error} onRetry={handleRetry} />
         )}
+
 
         {/* Dashboard Title & Quick Insights */}
         <View className="mb-6">

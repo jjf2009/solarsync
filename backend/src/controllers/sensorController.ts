@@ -11,15 +11,33 @@ export async function getLatest(req: Request, res: Response): Promise<void> {
   const cached = getCachedReading();
 
   if (cached) {
-    res.json({ source: 'live', data: cached });
+    res.json({
+      leftLDR: cached.leftLDR,
+      rightLDR: cached.rightLDR,
+      servoAngle: cached.servoAngle,
+      trackingDirection: cached.trackingDirection,
+      connectionStatus: true,
+      timestamp: new Date().toISOString(),
+    });
     return;
   }
 
-  // Fallback: query the database
-  const dbReading = await getDbLatestReading();
-  if (dbReading) {
-    res.json({ source: 'db', data: dbReading });
-    return;
+  try {
+    // Fallback: query the database
+    const dbReading = await getDbLatestReading();
+    if (dbReading) {
+      res.json({
+        leftLDR: dbReading.leftLDR,
+        rightLDR: dbReading.rightLDR,
+        servoAngle: dbReading.servoAngle,
+        trackingDirection: dbReading.trackingDirection,
+        connectionStatus: false,
+        timestamp: dbReading.timestamp ?? new Date().toISOString(),
+      });
+      return;
+    }
+  } catch (err) {
+    console.error('[Controller] Fallback DB query failed:', err);
   }
 
   res.status(404).json({ message: 'No sensor data available yet.' });
@@ -28,7 +46,13 @@ export async function getLatest(req: Request, res: Response): Promise<void> {
 // GET /api/history?limit=50
 // Returns recent readings from the database
 export async function getHistory(req: Request, res: Response): Promise<void> {
-  const limit = Math.min(Number(req.query['limit'] ?? 50), 500);
-  const readings = await getRecentReadings(limit);
-  res.json({ count: readings.length, data: readings });
+  try {
+    const limit = Math.min(Number(req.query['limit'] ?? 50), 500);
+    const readings = await getRecentReadings(limit);
+    res.json({ count: readings.length, data: readings });
+  } catch (err) {
+    console.error('[Controller] DB history query failed:', err);
+    res.status(500).json({ message: 'Failed to retrieve sensor history.' });
+  }
 }
+
