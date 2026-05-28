@@ -14,7 +14,7 @@ export function getLatestReading(): ParsedSensorData | null {
 }
 
 export function startSerialService(): void {
-  const portPath = process.env.SERIAL_PORT ?? '/dev/ttyUSB0';
+  const portPath = process.env.SERIAL_PORT ?? '/dev/ttyACM0';
   const baudRate = Number(process.env.SERIAL_BAUD ?? 9600);
 
   const port = new SerialPort({ path: portPath, baudRate });
