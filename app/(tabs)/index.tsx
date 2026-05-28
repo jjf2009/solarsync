@@ -35,8 +35,6 @@ export default function HomeScreen() {
   const loading = useSensorStore((s) => s.loading);
   const error = useSensorStore((s) => s.error);
 
-  // Demo mode is active whenever there is an error (backend unreachable)
-  const isDemoMode = error !== null;
   const isFirstLoad = loading;
 
   // Allow the user to manually trigger a re-fetch by resetting the store
@@ -77,9 +75,7 @@ export default function HomeScreen() {
         {/* Dashboard Title & Quick Insights */}
         <View className="mb-6">
           <Text className="text-[10px] font-bold tracking-widest text-[#00dbe7] font-mono uppercase">
-            {isDemoMode
-              ? 'SIMULATED CONTROL STATION'
-              : 'LIVE SOLAR TELEMETRY DASHBOARD'}
+            LIVE SOLAR TELEMETRY DASHBOARD
           </Text>
           <Text className="text-3xl font-extrabold text-[#e5e2e3] tracking-tight mt-1">
             Tracking Station
@@ -108,7 +104,7 @@ export default function HomeScreen() {
 
         {/* Row 3: Diagnostics & Network Telemetry Card */}
         <StatusCard
-          backendOnline={!isDemoMode}
+          backendOnline={!error}
           arduinoConnected={connectionStatus}
           timestamp={timestamp || null}
         />
