@@ -1,14 +1,13 @@
 import { useEffect, useRef, useCallback } from 'react';
 import { useSensorStore } from '@/store/sensorStore';
 import { fetchLatestSensorData, mapResponseToTelemetry } from '@/services/api';
-import { startPolling, generateDemoTelemetry } from '@/services/polling';
+import { startPolling } from '@/services/polling';
 import { API_BASE_URL, POLLING_INTERVAL_MS } from '@/constants/config';
 
 /**
  * Custom hook to manage real-time telemetry polling.
  * Connects to the backend via central API and Polling services,
- * updating the Zustand sensorStore. Falls back to simulated Demo Mode
- * if connection drops.
+ * updating the Zustand sensorStore.
  *
  * @returns The active backend base URL for display in system error messages.
  */
@@ -30,10 +29,8 @@ export function useSensorData(): string {
       setError(null);
     } catch (err) {
       console.warn('Telemetry server offline:', err);
-      const demoData = generateDemoTelemetry();
-      setTelemetry(demoData);
       setError(
-        `Unable to reach API server at ${API_BASE_URL}. Running in simulated Telemetry Mode.`
+        `Unable to reach API server at ${API_BASE_URL}.`
       );
     } finally {
       if (!hasFirstLoaded.current) {
