@@ -15,6 +15,7 @@ export async function getLatest(req: Request, res: Response): Promise<void> {
       leftLDR: cached.leftLDR,
       rightLDR: cached.rightLDR,
       servoAngle: cached.servoAngle,
+      panelOutput: cached.panelOutput,
       trackingDirection: cached.trackingDirection,
       connectionStatus: true,
       timestamp: new Date().toISOString(),
@@ -30,6 +31,7 @@ export async function getLatest(req: Request, res: Response): Promise<void> {
         leftLDR: dbReading.leftLDR,
         rightLDR: dbReading.rightLDR,
         servoAngle: dbReading.servoAngle,
+        panelOutput: dbReading.panelOutput,
         trackingDirection: dbReading.trackingDirection,
         connectionStatus: false,
         timestamp: dbReading.timestamp ?? new Date().toISOString(),
@@ -55,4 +57,3 @@ export async function getHistory(req: Request, res: Response): Promise<void> {
     res.status(500).json({ message: 'Failed to retrieve sensor history.' });
   }
 }
-

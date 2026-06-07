@@ -3,13 +3,13 @@ import { API_BASE_URL } from '@/constants/config';
 
 export const backendUrl = API_BASE_URL;
 
-
 // ─── Response shape from GET /api/latest ──────────────────────────────────────
 
 export interface LatestSensorResponse {
   leftLDR: number;
   rightLDR: number;
   servoAngle: number;
+  panelOutput: number;
   trackingDirection: string;
   connectionStatus: boolean;
   timestamp: string;
@@ -77,6 +77,7 @@ export function mapResponseToTelemetry(
     leftLDR: data.leftLDR,
     rightLDR: data.rightLDR,
     servoAngle: data.servoAngle,
+    panelOutput: data.panelOutput ?? 0,
     trackingDirection: data.trackingDirection,
     connectionStatus: data.connectionStatus,
     timestamp: data.timestamp,

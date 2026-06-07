@@ -9,6 +9,28 @@
 /** Possible directions reported by the Arduino tracking algorithm. */
 export type TrackingDirection = 'Left' | 'Right' | 'Centered' | 'Idle' | string;
 
+// ─── Panel Output Classification ─────────────────────────────────────────────
+
+export type PanelOutputLevel =
+  | 'No Generation'
+  | 'Low Generation'
+  | 'Medium Generation'
+  | 'High Generation';
+
+/**
+ * Classify a raw ADC panel output value (0–1023) into a generation level.
+ * 0–100   → No Generation
+ * 101–300 → Low Generation
+ * 301–700 → Medium Generation
+ * 701–1023 → High Generation
+ */
+export function classifyPanelOutput(value: number): PanelOutputLevel {
+  if (value <= 100)  return 'No Generation';
+  if (value <= 300)  return 'Low Generation';
+  if (value <= 700)  return 'Medium Generation';
+  return 'High Generation';
+}
+
 // ─── Raw Telemetry ────────────────────────────────────────────────────────────
 
 /**
@@ -22,6 +44,8 @@ export interface SensorTelemetry {
   rightLDR: number;
   /** Current servo angle in degrees (0–180). */
   servoAngle: number;
+  /** Solar panel ADC output value (0–1023). */
+  panelOutput: number;
   /** Current tracking direction as reported by the Arduino. */
   trackingDirection: TrackingDirection;
   /** True when the Arduino is actively connected via serial. */
@@ -90,4 +114,9 @@ export interface StatusCardProps {
   backendOnline: boolean;
   arduinoConnected: boolean;
   timestamp: string | null;
+}
+
+/** Props for the PanelOutputCard component. */
+export interface PanelOutputCardProps {
+  panelOutput: number;
 }
