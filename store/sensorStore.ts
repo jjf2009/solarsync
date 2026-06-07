@@ -7,6 +7,7 @@ export interface SensorState {
   leftLDR: number;
   rightLDR: number;
   servoAngle: number;
+  panelOutput: number;
   trackingDirection: string;
   connectionStatus: boolean;
   timestamp: string;
@@ -31,6 +32,7 @@ const initialState: SensorState = {
   leftLDR: 0,
   rightLDR: 0,
   servoAngle: 0,
+  panelOutput: 0,
   trackingDirection: '',
   connectionStatus: false,
   timestamp: '',
@@ -49,6 +51,7 @@ export const useSensorStore = create<SensorStore>()(
         leftLDR: data.leftLDR,
         rightLDR: data.rightLDR,
         servoAngle: data.servoAngle,
+        panelOutput: data.panelOutput,
         trackingDirection: data.trackingDirection,
         connectionStatus: data.connectionStatus,
         timestamp: data.timestamp,

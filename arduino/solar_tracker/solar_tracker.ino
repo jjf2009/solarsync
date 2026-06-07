@@ -7,27 +7,69 @@ Servo servo;
 // ─────────────────────────────────────────────
 const int eastLDR = A0;
 const int westLDR = A1;
+const int panelOutputPin = A2;
 
 const int SERVO_PIN = 9;
 
 // ─────────────────────────────────────────────
 // Servo Limits
-// Safe range to avoid servo grinding/jitter
 // ─────────────────────────────────────────────
-const int SERVO_MIN = 40;
-const int SERVO_MAX = 140;
+const int SERVO_MIN = 10;    // East
+const int SERVO_MAX = 100;   // West
 
 // ─────────────────────────────────────────────
 // Tracking Settings
 // ─────────────────────────────────────────────
-const int THRESHOLD = 80;
-const int SERVO_STEP = 5;
+const int THRESHOLD = 100;
+const int SERVO_STEP = 1;
+
+// ─────────────────────────────────────────────
+// Night Detection
+// ─────────────────────────────────────────────
+const int NIGHT_THRESHOLD = 300;
+const int HOME_POSITION = SERVO_MIN;
 
 // ─────────────────────────────────────────────
 // State
 // ─────────────────────────────────────────────
-int servoPosition = 90;
+int servoPosition = HOME_POSITION;
 
+const char* trackerState = "NIGHT";
+
+// ─────────────────────────────────────────────
+// Read Averaged Sensor Value
+// ─────────────────────────────────────────────
+int readAverage(int pin) {
+
+  long total = 0;
+
+  for (int i = 0; i < 5; i++) {
+
+    total += analogRead(pin);
+
+    delay(2);
+  }
+
+  return total / 5;
+}
+
+// ─────────────────────────────────────────────
+// Move Servo
+// ─────────────────────────────────────────────
+void moveServo(int target) {
+
+  target = constrain(target, SERVO_MIN, SERVO_MAX);
+
+  if (target == servoPosition)
+    return;
+
+  servoPosition = target;
+
+  servo.write(servoPosition);
+}
+
+// ─────────────────────────────────────────────
+// Setup
 // ─────────────────────────────────────────────
 void setup() {
 
@@ -35,99 +77,124 @@ void setup() {
 
   servo.attach(SERVO_PIN);
 
-  // Move servo to center position
-  servo.write(servoPosition);
+  servo.write(HOME_POSITION);
+
+  servoPosition = HOME_POSITION;
+
+  delay(500);
 
   Serial.println("SolarSync Ready");
 }
 
 // ─────────────────────────────────────────────
+// Main Loop
+// ─────────────────────────────────────────────
 void loop() {
 
-  // ─────────────────────────────────────────
-  // Read LDR Values
-  // Small averaging reduces sensor noise
-  // ─────────────────────────────────────────
-
-  int east1 = analogRead(eastLDR);
-  int east2 = analogRead(eastLDR);
-
-  int west1 = analogRead(westLDR);
-  int west2 = analogRead(westLDR);
-
-  int east = (east1 + east2) / 2;
-  int west = (west1 + west2) / 2;
-
-  // ─────────────────────────────────────────
-  // Calculate Difference
-  // ─────────────────────────────────────────
+  // Read Sensors
+  int east = readAverage(eastLDR);
+  int west = readAverage(westLDR);
+  int panelOutput = readAverage(panelOutputPin);
 
   int error = east - west;
 
-  String direction = "CENTER";
+  int lightLevel = (east + west) / 2;
 
   // ─────────────────────────────────────────
-  // Tracking Logic
+  // NIGHT MODE
   // ─────────────────────────────────────────
 
-  if (error > THRESHOLD) {
+  if (lightLevel < NIGHT_THRESHOLD) {
 
-    // More light on EAST sensor
-    // Rotate servo RIGHT
+    if (servoPosition > HOME_POSITION) {
 
-    if (servoPosition < SERVO_MAX) {
+      moveServo(servoPosition - 1);
 
-      servoPosition += SERVO_STEP;
-
-      servo.write(servoPosition);
+      trackerState = "RETRN";
     }
+    else {
 
-    direction = "RIGHT";
+      trackerState = "NIGHT";
+    }
   }
 
-  else if (error < -THRESHOLD) {
-
-    // More light on WEST sensor
-    // Rotate servo LEFT
-
-    if (servoPosition > SERVO_MIN) {
-
-      servoPosition -= SERVO_STEP;
-
-      servo.write(servoPosition);
-    }
-
-    direction = "LEFT";
-  }
+  // ─────────────────────────────────────────
+  // DAY MODE
+  // ─────────────────────────────────────────
 
   else {
 
-    direction = "CENTER";
+    if (error > THRESHOLD) {
+
+      // Move RIGHT
+
+      if (servoPosition >= SERVO_MAX) {
+
+        trackerState = "HRGHT";
+      }
+      else {
+
+        moveServo(servoPosition + SERVO_STEP);
+
+        trackerState = "RIGHT";
+      }
+    }
+
+    else if (error < -THRESHOLD) {
+
+      // Move LEFT
+
+      if (servoPosition <= SERVO_MIN) {
+
+        trackerState = "HLEFT";
+      }
+      else {
+
+        moveServo(servoPosition - SERVO_STEP);
+
+        trackerState = "LEFT ";
+      }
+    }
+
+    else {
+
+      // Aligned
+
+      if (servoPosition <= SERVO_MIN) {
+
+        trackerState = "HLEFT";
+      }
+      else if (servoPosition >= SERVO_MAX) {
+
+        trackerState = "HRGHT";
+      }
+      else {
+
+        trackerState = "CNTER";
+      }
+    }
   }
 
   // ─────────────────────────────────────────
   // Serial Output
-  // Format used by Node.js backend parser
+  // Format:
+  // L:820,R:310,A:75,P:412,D:RIGHT
   // ─────────────────────────────────────────
 
-Serial.print("L:");
-Serial.print(east);
+  Serial.print("L:");
+  Serial.print(east);
 
-Serial.print(",R:");
-Serial.print(west);
+  Serial.print(",R:");
+  Serial.print(west);
 
-Serial.print(",A:");
-Serial.print(servoPosition);
+  Serial.print(",A:");
+  Serial.print(servoPosition);
 
-Serial.print(",D:");
-Serial.print(direction);
+  Serial.print(",P:");
+  Serial.print(panelOutput);
 
-Serial.println();
+  Serial.print(",D:");
+  Serial.println(trackerState);
 
-  // ─────────────────────────────────────────
-  // Delay
-  // Higher delay = smoother movement
-  // ─────────────────────────────────────────
-
-  delay(100);
+  delay(150);
 }
