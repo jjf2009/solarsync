@@ -1,11 +1,11 @@
 {
   "expo": {
-    "name": "IOTPROJECT",
-    "slug": "IOTPROJECT",
+    "name": "SolarSync",
+    "slug": "solarsync",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "iotproject",
+    "scheme": "solarsync",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
