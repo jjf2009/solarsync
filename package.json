@@ -1,5 +1,23 @@
 {
-  "name": "iotproject",
+  "name": "solarsync",
+  "description": "SolarSync is an IoT smart solar tracking and monitoring platform with Arduino, Node.js, MySQL, and Expo React Native.",
+  "keywords": [
+    "solarsync",
+    "solar-tracking",
+    "solar-monitoring",
+    "iot",
+    "arduino",
+    "servo-control",
+    "ldr-sensor",
+    "react-native",
+    "expo",
+    "nodejs",
+    "express",
+    "mysql",
+    "renewable-energy",
+    "clean-energy",
+    "geo-optimized-solar"
+  ],
   "main": "expo-router/entry",
   "version": "1.0.0",
   "scripts": {
