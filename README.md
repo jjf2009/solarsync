@@ -1,8 +1,14 @@
 # SolarSync ☀️🔄
 
-SolarSync is an IoT-based smart solar tracking and monitoring system that automatically adjusts a solar panel's physical direction based on light intensity, and delivers real-time sensor analytics, alignment tracking, and hardware telemetry directly to a mobile application.
+SolarSync is an IoT smart solar tracking and monitoring system that automatically adjusts solar panel direction based on sunlight intensity and streams real-time telemetry to a mobile app. It is built for renewable energy monitoring use cases across campuses, farms, homes, and remote off-grid locations.
 
 The project features a **high-fidelity glassmorphism dashboard** built with React Native and Expo Go, powered by a Node.js & Express API, backed by a MySQL database, and running on autonomous Arduino UNO hardware.
+
+## 🔎 Repository SEO Metadata
+
+- **Repository Name**: `SolarSync`
+- **Suggested Description**: `IoT smart solar tracking and monitoring system with Arduino, Node.js, MySQL, and Expo React Native dashboard for real-time renewable energy telemetry.`
+- **Suggested Topics/Tags**: `solar-tracking`, `solar-monitoring`, `iot`, `arduino`, `react-native`, `expo`, `nodejs`, `express`, `mysql`, `renewable-energy`, `clean-energy`, `telemetry`, `smart-energy`, `sustainability`, `geo-optimized-solar`
 
 ---
 
@@ -49,7 +55,7 @@ SolarSync coordinates physical tracking, database history logging, and mobile te
                                   └──────────────────────┘
 ```
 
-The workspace is organized cleanly as follows (fully detailed in [AGENTS.md](file:///home/jjf2009/Desktop/Projects/IOTPROJECT/AGENTS.md)):
+The workspace is organized cleanly as follows (fully detailed in [AGENTS.md](./AGENTS.md)):
 - **`app/`**: Expo Router navigation tree and primary screens.
 - **`components/`**: Modular, high-fidelity UI dashboard parts (`SensorCard`, `ServoIndicator`, etc.).
 - **`services/`**: Network operations and frontend API polling clients.
@@ -74,7 +80,7 @@ To run the full hardware package, wire your components to the Arduino Uno R3 as 
   - Wired into **Analog Pin A1** (with a `10kΩ` pull-down resistor to Ground in a voltage divider circuit).
 
 > [!NOTE]
-> For detailed instructions, wiring diagrams, and cardboard frame design layouts, please check the [Comprehensive User Manual](file:///home/jjf2009/Desktop/Projects/IOTPROJECT/docs/setup_guide.md#%EF%B8%8F-hardware-assembly--wiring-guide).
+> For detailed instructions, wiring diagrams, and cardboard frame design layouts, please check the [Comprehensive User Manual](./docs/setup_guide.md).
 
 ---
 
@@ -127,7 +133,7 @@ The SolarSync mobile app includes an integrated, automatic **Demo Mode** fallbac
 
 Looking for in-depth wiring details, serial port permissions on Linux (`udev` rules), database seeding, network configurations, or detailed troubleshooting guides? 
 
-Check out the full **[SolarSync User Manual & Setup Guide](file:///home/jjf2009/Desktop/Projects/IOTPROJECT/docs/setup_guide.md)**.
+Check out the full **[SolarSync User Manual & Setup Guide](./docs/setup_guide.md)**.
 
 ---
 
